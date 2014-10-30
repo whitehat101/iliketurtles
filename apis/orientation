@@ -66,7 +66,7 @@ function autoCalibrate(...)
         gps.locate()
       end)
 
-    elseif initial ~= current
+    elseif initial ~= current then
       if direction == 'forward' then
         calibrate(current-initial)
       else
