@@ -1,0 +1,25 @@
+-- only bootstrap iliketurtles once
+if os.iliketurtles == nil then
+  os.iliketurtles = true
+
+  os.loadAPI('/iliketurtles/queued')
+  local wrap = {
+    [gps] = {'locate'}
+  }
+  if turtle then
+    wrap[turtle] = {'up','down','forward','back','turnLeft','turnRight'}
+  end
+  -- wrap core API methods into a queued object
+  for object, methods in pairs(wrap) do
+    for i, method in ipairs(methods) do
+      object[method] = queued.new(object[method])
+    end
+  end
+
+  if turtle then
+    os.loadAPI('/iliketurtles/orientation')
+    os.loadAPI('/iliketurtles/position')
+  end
+
+  shell.setPath(shell.path()..':/iliketurtles')
+end

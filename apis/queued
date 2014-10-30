@@ -1,0 +1,60 @@
+-- Queued Function
+
+local function enqueue(queue)
+  return function(callback)
+    table.insert(queue, callback)
+    return function()
+      for i=#queue, 1, -1 do
+        if queue[i] == callback then
+          table.remove(queue, i)
+        end
+      end
+    end
+  end
+end
+
+local function doCallbacks(queue, ret)
+  for i, callback in ipairs(queue) do
+    callback(unpack(ret))
+  end
+end
+
+function new(source)
+  local always, success, fail = {}, {}, {}
+  return setmetatable({
+    queue   = enqueue(always),
+    always  = enqueue(always),
+    success = enqueue(success),
+    fail    = enqueue(fail),
+  }, {
+    __call = function (self, ...)
+      local ret = {source(...)}
+      if ret[1] then
+        doCallbacks(success, ret)
+      else
+        doCallbacks(fail, ret)
+      end
+      doCallbacks(always, ret)
+      return unpack(ret)
+    end
+  })
+end
+
+--[[
+function function_name()
+  print("Hello World")
+  return 3,4,5,6,7
+end
+
+function bad_function()
+  error('bad_function!')
+end
+
+queued = new(function_name)
+-- queued.queue(bad_function)
+queued.dequeue()
+queued.queue(function( ... )
+  print(...)
+end)
+print(queued())
+]]

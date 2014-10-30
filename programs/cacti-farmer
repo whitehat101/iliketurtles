@@ -1,0 +1,66 @@
+os.loadAPI('travel')
+os.loadAPI('refuel')
+local inventory = {
+  fuel = 16,
+  cacti = 1,
+}
+orientation.autoCalibrate()
+refuel.fromEnderChest(inventory.fuel)
+local origin, heading = vector.new(), 'North'
+
+
+
+local function farmCactus()
+  if turtle.detectDown() then
+    turtle.digDown()
+    turtle.down()
+    turtle.digDown()
+    turtle.up()
+  end
+end
+
+-- Main Farming Routines
+
+local turns = {
+  [0] = turtle.turnLeft,
+  [1] = turtle.turnRight,
+}
+
+function farmField()
+  travel.goYthenXZ(origin)
+  -- orientation['turn'..heading]()
+  orientation.turn(heading)
+  farmCactus()
+
+  for walk = 1, farmSize do
+    for i = 1, farmSize - 1 do
+      turtle.forward()
+      farmCactus()
+      os.sleep(rest)
+    end
+    if walk ~= farmSize then
+      local turn = turns[walk % 2]
+      turn()
+      turtle.forward()
+      farmCactus()
+      os.sleep(rest)
+      turn()
+    end
+  end
+end
+
+function depositCactus()
+  travel.goXZthenY(storage)
+  redstone.setOutput('bottom', true)
+  turtle.dropDown()
+  redstone.setOutput('bottom', false)
+end
+
+-- Main "Event" Loop
+turtle.select(inventory.cacti)
+while true do
+  farmField()
+  if turtle.getItemCount() >= 32 then
+    depositCactus()
+  end
+end
