@@ -1,11 +1,11 @@
 local root = '/iliketurtles/'
 local install = {
+  'startup',
   'apis/orientation',
   'apis/position',
   'apis/queued',
   'apis/refuel',
   'apis/travel',
-  'apis/startup',
   'programs/cacti-farmer',
 }
 
@@ -15,7 +15,7 @@ for i, file in ipairs(install) do
 end
 
 if not fs.exists('/startup') then
-  local file = fs.open('/startup')
+  local file = fs.open('/startup','w')
   file.write("shell.run('/iliketurtles/startup')\n")
   file.close()
 end

@@ -2,7 +2,7 @@
 if os.iliketurtles == nil then
   os.iliketurtles = true
 
-  os.loadAPI('/iliketurtles/queued')
+  os.loadAPI('/iliketurtles/apis/queued')
   local wrap = {
     [gps] = {'locate'}
   }
@@ -17,8 +17,8 @@ if os.iliketurtles == nil then
   end
 
   if turtle then
-    os.loadAPI('/iliketurtles/orientation')
-    os.loadAPI('/iliketurtles/position')
+    os.loadAPI('/iliketurtles/apis/orientation')
+    os.loadAPI('/iliketurtles/apis/position')
   end
 
   shell.setPath(shell.path()..':/iliketurtles')
