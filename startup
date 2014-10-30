@@ -22,4 +22,5 @@ if os.iliketurtles == nil then
   end
 
   shell.setPath(shell.path()..':/iliketurtles')
+  print('iliketurtles')
 end

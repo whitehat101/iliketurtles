@@ -19,3 +19,5 @@ if not fs.exists('/startup') then
   file.write("shell.run('/iliketurtles/startup')\n")
   file.close()
 end
+
+os.reboot()

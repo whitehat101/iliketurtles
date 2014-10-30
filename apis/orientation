@@ -44,9 +44,11 @@ end)
 function autoCalibrate(...)
   local initial
   local direction
-  -- TODO gps detection
+  local gpsArgs = {...}
+
   -- calibrate orientation from gps movements
-  local unregister = gps.locate.success(function(x, y, z)
+  local unregister
+  unregister = gps.locate.success(function(x, y, z)
     local current = Vector.new(x, y, z)
     local unregisterForward, unregisterBack
 
@@ -57,14 +59,14 @@ function autoCalibrate(...)
         unregisterForward()
         unregisterBack()
         direction = 'forward'
-        gps.locate()
+        gps.locate(unpack(gpsArgs))
       end)
 
       unregisterBack = turtle.back.success(function()
         unregisterForward()
         unregisterBack()
         direction = 'back'
-        gps.locate()
+        gps.locate(unpack(gpsArgs))
       end)
 
     elseif initial ~= current then
@@ -78,7 +80,7 @@ function autoCalibrate(...)
     end
   end)
 
-  return gps.locate(...)
+  return gps.locate(unpack(gpsArgs))
 end
 
 -- Relative 180 turn
@@ -149,5 +151,5 @@ function tostring()
   return vectorToWord[v.x][v.z]
 end
 
-heading = direction -- alias
-facing = direction  -- alias
+heading = tostring -- alias
+facing = tostring  -- alias
