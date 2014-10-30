@@ -53,13 +53,15 @@ function autoCalibrate(...)
       initial = current
 
       unregisterForward = turtle.forward.success(function()
-        unregisterForward() and unregisterBack()
+        unregisterForward()
+        unregisterBack()
         direction = 'forward'
         gps.locate()
       end)
 
       unregisterBack = turtle.back.success(function()
-        unregisterForward() and unregisterBack()
+        unregisterForward()
+        unregisterBack()
         direction = 'back'
         gps.locate()
       end)
@@ -71,7 +73,7 @@ function autoCalibrate(...)
         calibrate(initial-current)
       end
       unregister()
-      unregisterForward, unregisterBack = nil, nil
+      initial, unregister, unregisterForward, unregisterBack = nil
     end
   end)
 
