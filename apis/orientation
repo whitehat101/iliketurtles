@@ -1,6 +1,7 @@
 -- Add Oriention tracking to native turtle API
 
 -- Internally orientation is stored as a vector
+local Vector = vector
 local v = { x=0, z=0 }
 
 -- Calibrate orientation via string
@@ -46,7 +47,7 @@ function autoCalibrate(...)
   -- TODO gps detection
   -- calibrate orientation from gps movements
   local unregister = gps.locate.success(function(x, y, z)
-    local current = vector.new(x, y, z)
+    local current = Vector.new(x, y, z)
     local unregisterForward, unregisterBack
 
     if not initial then
@@ -131,7 +132,7 @@ function turn(direction)
 end
 
 function vector()
-  return vector.new(v.x, 0, v.z)
+  return Vector.new(v.x, 0, v.z)
 end
 
 -- Map vector to words
