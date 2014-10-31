@@ -129,7 +129,7 @@ end
 
 function turn(direction)
   local method = 'turn'..direction:gsub("^%l", string.upper)
-  local f = assert(_G[method], 'MethodMissing: '..method)
+  local f = assert(orientation[method], 'MethodMissing: '..method)
   return f()
 end
 

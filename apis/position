@@ -32,7 +32,7 @@ gps.locate.success(function(x, y, z)
 end)
 
 function tostring()
-  return '('..v.x..', '..v.y..', '..v.z..') '..turtle.direction()
+  return '('..v.x..', '..v.y..', '..v.z..') '..orientation.tostring()
 end
 
 function vector()
