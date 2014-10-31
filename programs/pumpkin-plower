@@ -9,6 +9,7 @@ local inventory = {
   fuel = 16,
 }
 orientation.autoCalibrate()
+turtle.back()
 refuel.fromEnderChest(inventory.fuel)
 
 assert(#{...} == 8, "Incorrect Parameters.\n"..
@@ -23,9 +24,10 @@ local function with(item, callback)
   -- if turtle.getItemCount(inventory[item]) == 1 then
   local prevItem = turtle.getSelectedSlot()
   turtle.select(inventory[item])
-  assert(turtle.equipRight()) -- equip
+  assert(turtle.equipLeft()) -- equip
   local ret = {callback()}
-  assert(turtle.equipRight()) -- unequip
+  print('with '..item..' ', unpack(ret))
+  assert(turtle.equipLeft()) -- unequip
   turtle.select(prevItem)
   return unpack(ret)
   -- end
@@ -42,12 +44,14 @@ function farmField()
     with('hoe', turtle.digDown)
   end)
 
-  turtle.forward()
-  for cnt=1, 4 do
+  for loop=1, 3 do
     turtle.forward()
-    turtle.forward()
-    if cnt ~= 4 then
-      turtle.turnRight()
+    for cnt=1, 4 do
+      turtle.forward()
+      turtle.forward()
+      if cnt ~= 4 then
+        turtle.turnRight()
+      end
     end
   end
 
