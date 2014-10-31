@@ -7,7 +7,7 @@ local function refuel(ret, msg)
     turtle.placeUp()
     turtle.suckUp(1)
     turtle.refuel(1)
-    turtle.digUp()
+    inventory.with('pick', turtle.digUp)
     turtle.select(item)
   end
 end

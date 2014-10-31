@@ -1,6 +1,7 @@
 local root = '/iliketurtles/'
 local install = {
   'startup',
+  'apis/inventory',
   'apis/orientation',
   'apis/position',
   'apis/queued',
