@@ -1,14 +1,16 @@
-os.loadAPI('travel')
-os.loadAPI('refuel')
+os.loadAPI('/iliketurtles/apis/travel')
+os.loadAPI('/iliketurtles/apis/refuel')
 local inventory = {
   fuel = 16,
   cacti = 1,
 }
 orientation.autoCalibrate()
 refuel.fromEnderChest(inventory.fuel)
-local origin, heading = vector.new(), 'North'
+local origin, heading = vector.new(10, 64, 10), 'North'
+local farmSize = 9
+local rest = 0.010
 
-
+-- Main Farming Routines
 
 local function farmCactus()
   if turtle.detectDown() then
@@ -19,8 +21,6 @@ local function farmCactus()
   end
 end
 
--- Main Farming Routines
-
 local turns = {
   [0] = turtle.turnLeft,
   [1] = turtle.turnRight,
@@ -28,7 +28,6 @@ local turns = {
 
 function farmField()
   travel.goYthenXZ(origin)
-  -- orientation['turn'..heading]()
   orientation.turn(heading)
   farmCactus()
 
