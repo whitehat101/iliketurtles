@@ -7,6 +7,7 @@ local install = {
   'apis/refuel',
   'apis/travel',
   'programs/cacti-farmer',
+  'programs/pumpkin-plower',
 }
 
 fs.delete(root)
