@@ -47,13 +47,9 @@ function farmField()
 
   local unregister = turtle.forward.success(function()
     if turtle.detect() then
-      with('pick', turtle.dig)
+      with('pick', turtle.digDown)
     end
-    with('hoe', function()
-      os.sleep(0.25)
-      local ret = {turtle.digDown()}
-      print('hoe', unpack(ret))
-    end)
+    with('hoe', turtle.digDown)
   end)
 
   for loop=1, 3 do
