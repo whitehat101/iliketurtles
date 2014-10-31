@@ -17,6 +17,6 @@ if os.iliketurtles == nil then
     os.loadAPI('/iliketurtles/apis/position')
   end
 
-  shell.setPath(shell.path()..':/iliketurtles')
+  shell.setPath(shell.path()..':/iliketurtles/programs')
   print('iliketurtles')
 end
