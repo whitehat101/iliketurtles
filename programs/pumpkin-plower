@@ -4,6 +4,7 @@ os.loadAPI('/iliketurtles/apis/travel')
 os.loadAPI('/iliketurtles/apis/refuel')
 local inventory = {
   pumpkin = 1,
+  empty = 13,
   pick = 14,
   hoe = 15,
   fuel = 16,
@@ -20,32 +21,28 @@ local origin = vector.new(x0, y0, z0)
 local storage = vector.new(xS, yS, zS)
 
 -- Main Farming Routines
+local activeTool
 local function with(item, callback)
   local prevItem = turtle.getSelectedSlot()
 
-  -- equip
-  turtle.select(inventory[item])
-  assert(turtle.equipLeft())
+  -- equip requested tool
+  if activeTool ~= item then
+    turtle.select(inventory[activeTool])
+    assert(turtle.equipLeft())
+
+    turtle.select(inventory[item])
+    assert(turtle.equipLeft())
+    activeTool = item
+  end
 
   -- restore inventory before callback
   turtle.select(prevItem)
-  local ret = {callback()}
-  print('with '..item..' ', unpack(ret))
-
-  -- unequip
-  turtle.select(inventory[item])
-  assert(turtle.equipLeft())
-
-  -- restore inventory
-  turtle.select(prevItem)
-  return unpack(ret)
+  return callback()
 end
 
 local function ensure(callback)
   local ret
-  repeat
-    ret = {callback()}
-  until ret[1]
+  repeat ret = {callback()} until ret[1]
   return unpack(ret)
 end
 
@@ -82,6 +79,25 @@ function deposit()
   redstone.setOutput('front', false)
 end
 
+local function unequip()
+    turtle.select(inventory.empty)
+    if turtle.getItemCount() > 0 then
+      turtle.drop()
+    end
+    turtle.equipLeft()
+    if turtle.getItemCount() == 1 then
+      if turtle.getItemCount(inventory.hoe) == 0 then
+        turtle.transferTo(inventory.hoe)
+      elseif turtle.getItemCount(inventory.pick) == 0 then
+        turtle.transferTo(inventory.pick)
+      else
+        print('wtf? please reset inventory')
+        while true do turtle.turnRight() end
+      end
+    end
+    activeTool = 'empty'
+end
+
 -- Main "Event" Loop
 print(
   "pumpkin-farmer\n"..
@@ -91,6 +107,7 @@ print(
 )
 for item, slot in pairs(inventory) do print('- '..slot..' '..item) end
 
+unequip()
 turtle.select(inventory.pumpkin)
 while true do
   farmField()
