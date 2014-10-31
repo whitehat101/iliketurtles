@@ -7,9 +7,12 @@ local inventory = {
 orientation.autoCalibrate()
 refuel.fromEnderChest(inventory.fuel)
 
-assert(#{...} >= 4, "Usage: cacti-farmer heading, x, y, z, [farmSize = 9], [rest = 0] ")
-local heading, x0, y0, z0, farmSize, rest = ...
+assert(#{...} >= 7, "Incorrect Parameters.\n"..
+  "Usage: cacti-farmer heading, x, y, z, xS, yS, zS, [farmSize = 9], [rest = 0]\n"..
+  "                             origin   storage")
+local heading, x0, y0, z0, xS, yS, zS, farmSize, rest = ...
 local origin = vector.new(x0, y0, z0)
+local storage = vector.new(xS, yS, zS)
 farmSize = farmSize or 9
 rest = rest or 0
 
@@ -60,11 +63,14 @@ end
 
 -- Main "Event" Loop
 print(
-  'cacti-farmer',
-  'origin: '..origin:tostring()..' '..heading,
-  'farmSize: '..farmSize,
-  'rest: '..rest
+  "cacti-farmer\n"..
+  'origin: '..origin:tostring()..' '..heading.."\n"..
+  'storage: '..storage:tostring().."\n"..
+  'farmSize: '..farmSize.."\n"..
+  'rest: '..rest.."\n"..
+  'Inventory:'
 )
+for item, slot in pairs(inventory) do print('- '..slot..' '..item) end
 
 turtle.select(inventory.cacti)
 while true do
