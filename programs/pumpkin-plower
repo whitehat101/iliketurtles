@@ -41,22 +41,30 @@ local function with(item, callback)
   return unpack(ret)
 end
 
+local function ensure(callback)
+  local ret
+  repeat
+    ret = {callback()}
+  until ret[1]
+  return unpack(ret)
+end
+
 function farmField()
   travel.goYthenXZ(origin)
   orientation.turn(heading)
 
   local unregister = turtle.forward.success(function()
-    if turtle.detect() then
+    if turtle.detectDown() then
       with('pick', turtle.digDown)
     end
     with('hoe', turtle.digDown)
   end)
 
   for loop=1, 3 do
-    turtle.forward()
+    ensure(turtle.forward)
     for cnt=1, 4 do
-      turtle.forward()
-      turtle.forward()
+      ensure(turtle.forward)
+      ensure(turtle.forward)
       if cnt ~= 4 then
         turtle.turnRight()
       end
