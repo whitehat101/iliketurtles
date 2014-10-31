@@ -90,6 +90,6 @@ if turtle then
   orientation.calibrate('north')
 end
 
-for i,file in ipairs({...}) do
-  dofile(file)
-end
+local args = {...}
+local program = table.remove(args, 1)
+assert(loadfile(program), 'Unable to load program: '..program)(unpack(args))
