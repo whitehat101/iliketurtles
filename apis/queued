@@ -40,6 +40,14 @@ function new(source)
   })
 end
 
+function wrapAll(wrap)
+  for object, methods in pairs(wrap) do
+    for i, method in ipairs(methods) do
+      object[method] = new(object[method])
+    end
+  end
+end
+
 --[[
 function function_name()
   print("Hello World")

@@ -2,19 +2,15 @@
 if os.iliketurtles == nil then
   os.iliketurtles = true
 
-  os.loadAPI('/iliketurtles/apis/queued')
-  local wrap = {
+  assert(os.loadAPI('/iliketurtles/apis/queued'))
+  -- wrap core API methods into a queued object
+  local methods = {
     [gps] = {'locate'}
   }
   if turtle then
-    wrap[turtle] = {'up','down','forward','back','turnLeft','turnRight'}
+    methods[turtle] = {'up','down','forward','back','turnLeft','turnRight'}
   end
-  -- wrap core API methods into a queued object
-  for object, methods in pairs(wrap) do
-    for i, method in ipairs(methods) do
-      object[method] = queued.new(object[method])
-    end
-  end
+  queued.wrapAll(methods)
 
   if turtle then
     os.loadAPI('/iliketurtles/apis/orientation')
