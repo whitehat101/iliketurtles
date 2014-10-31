@@ -6,9 +6,12 @@ local inventory = {
 }
 orientation.autoCalibrate()
 refuel.fromEnderChest(inventory.fuel)
-local origin, heading = vector.new(10, 64, 10), 'North'
-local farmSize = 9
-local rest = 0.010
+
+assert(#{...} >= 4, "Usage: cacti-farmer heading, x, y, z, [farmSize = 9], [rest = 0] ")
+local heading, x0, y0, z0, farmSize, rest = ...
+local origin = vector.new(x0, y0, z0)
+farmSize = farmSize or 9
+rest = rest or 0
 
 -- Main Farming Routines
 
@@ -56,6 +59,13 @@ function depositCactus()
 end
 
 -- Main "Event" Loop
+print(
+  'cacti-farmer',
+  'origin: '..origin:tostring()..' '..heading,
+  'farmSize: '..farmSize,
+  'rest: '..rest
+)
+
 turtle.select(inventory.cacti)
 while true do
   farmField()
