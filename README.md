@@ -19,3 +19,17 @@ pastebin get sERDBEru install
 install
 rm install # optional
 ```
+
+## Testing
+
+Code was developed against `LuaJIT 2.0.3`.
+
+`test.lua` loads APIs compatible with those available in game and runs the first argument as a program and passes the remaining arguments to that program.
+
+```sh
+# run a program
+luajit test.lua programs/cacti-farmer north 1 2 3
+
+# run a test
+luajit test.lua apis/orientation_test.lua
+```
