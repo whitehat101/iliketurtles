@@ -1,0 +1,80 @@
+-- this script farms a very spicific (non-optimal) pumpkin farm with 3 pumpkins
+
+os.loadAPI('/iliketurtles/apis/travel')
+os.loadAPI('/iliketurtles/apis/refuel')
+local inventory = {
+  pumpkin = 1,
+  pick = 14,
+  hoe = 15,
+  fuel = 16,
+}
+orientation.autoCalibrate()
+refuel.fromEnderChest(inventory.fuel)
+
+assert(#{...} == 8, "Incorrect Parameters.\n"..
+  "Usage: pumpkin-plower heading0, x0, y0, z0, headingS, xS, yS, zS\n" ..
+  "                               origin                 storage")
+local heading, x0, y0, z0, storageHeading, xS, yS, zS = ...
+local origin = vector.new(x0, y0, z0)
+local storage = vector.new(xS, yS, zS)
+
+-- Main Farming Routines
+local function with(item, callback)
+  -- if turtle.getItemCount(inventory[item]) == 1 then
+  local prevItem = turtle.getSelectedSlot()
+  turtle.select(inventory[item])
+  assert(turtle.equipRight()) -- equip
+  local ret = {callback()}
+  assert(turtle.equipRight()) -- unequip
+  turtle.select(prevItem)
+  return unpack(ret)
+  -- end
+end
+
+function farmField()
+  travel.goYthenXZ(origin)
+  orientation.turn(heading)
+
+  local unregister = turtle.forward.success(function()
+    if turtle.detect() then
+      with('pick', turtle.dig)
+    end
+    with('hoe', turtle.digDown)
+  end)
+
+  turtle.forward()
+  for cnt=1, 4 do
+    turtle.forward()
+    turtle.forward()
+    if cnt ~= 4 then
+      turtle.turnRight()
+    end
+  end
+
+  unregister()
+end
+
+function deposit()
+  travel.goXZthenY(storage)
+  orientation.turn(storageHeading)
+  redstone.setOutput('front', true)
+  turtle.drop()
+  redstone.setOutput('front', false)
+end
+
+-- Main "Event" Loop
+print(
+  "pumpkin-farmer\n"..
+  'origin: '..origin:tostring()..' '..heading.."\n"..
+  'storage: '..storage:tostring()..' '..storageHeading.."\n"..
+  'Inventory:'
+)
+for item, slot in pairs(inventory) do print('- '..slot..' '..item) end
+
+turtle.select(inventory.pumpkin)
+while true do
+  farmField()
+  if turtle.getItemCount() >= 32 then
+    deposit()
+  end
+end

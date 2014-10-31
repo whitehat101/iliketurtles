@@ -31,6 +31,9 @@ turtle = {
   detectUp  = mock.random10,
   detect    = mock.random10,
   getItemCount = mock.one,
+  getSelectedSlot = mock.one,
+  equipRight = mock.True,
+  equipLeft = mock.True,
 }
 turtle.native = turtle
 
