@@ -47,22 +47,3 @@ function wrapAll(wrap)
     end
   end
 end
-
---[[
-function function_name()
-  print("Hello World")
-  return 3,4,5,6,7
-end
-
-function bad_function()
-  error('bad_function!')
-end
-
-queued = new(function_name)
--- queued.queue(bad_function)
-queued.dequeue()
-queued.queue(function( ... )
-  print(...)
-end)
-print(queued())
-]]
