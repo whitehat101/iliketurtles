@@ -42,12 +42,13 @@ shell = {
 gps = {
   locate = mock.noop
 }
+
 os.sleep = mock.noop
-local ffi = require("ffi")
-ffi.cdef[[int poll(struct pollfd *fds, unsigned long nfds, int timeout);]]
-function os.sleep(s)
-  ffi.C.poll(nil, 0, s*1000)
-end
+-- local ffi = require("ffi")
+-- ffi.cdef[[int poll(struct pollfd *fds, unsigned long nfds, int timeout);]]
+-- function os.sleep(s)
+--   ffi.C.poll(nil, 0, s*1000)
+-- end
 
 
 local tAPIsLoading = {}
