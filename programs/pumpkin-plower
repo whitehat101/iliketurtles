@@ -28,13 +28,28 @@ local function ensure(callback)
   return unpack(ret)
 end
 
+local function callAll(...)
+  local ret = {}
+  for i, callback in ipairs({...}) do
+    ret[i] = callback()
+  end
+  return ret
+end
+
 function farmField()
+  local loot = 0
   travel.goYthenXZ(origin)
   orientation.turn(heading)
 
-  local unregister = turtle.forward.success(function()
+  -- count loot
+  local unregister1 = turtle.digDown.success(function()
+    loot = loot + 1
+  end)
+
+  -- check for pumpkins
+  local unregister2 = turtle.forward.success(function()
     if turtle.detectDown() then
-      inventory.with('pick', turtle.digDown)
+      inventory.with('hoe', turtle.digDown)
     end
     inventory.with('hoe', turtle.digDown)
   end)
@@ -50,7 +65,8 @@ function farmField()
     end
   end
 
-  unregister()
+  callAll(unregister1, unregister2)
+  return loot
 end
 
 function deposit()
@@ -63,7 +79,7 @@ end
 
 -- Main "Event" Loop
 print(
-  "pumpkin-farmer\n"..
+  "pumpkin-plower\n"..
   'origin: '..origin:tostring()..' '..heading.."\n"..
   'storage: '..storage:tostring()..' '..storageHeading.."\n"..
   'Inventory:'
@@ -72,8 +88,14 @@ for item, slot in pairs(inventory.get()) do print('- '..slot..' '..item) end
 
 inventory.unequip()
 turtle.select(inventory.pumpkin)
+local cnt = 0
 while true do
-  farmField()
+  local start, delta = os.time()
+  local loot = farmField()
+  cnt = cnt + 1
+  delta = os.time() - start
+  if delta < 0 then delta = delta + 24 end
+  print('#'..cnt..' time='..delta..' loot='..loot..' ('..start..')')
   if turtle.getItemCount() >= 32 then
     deposit()
   end
