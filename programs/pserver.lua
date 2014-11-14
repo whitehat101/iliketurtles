@@ -53,13 +53,26 @@ local function respondTo(request)
           if device[request.method] then
             local call = request.argv or {}
             table.insert(call, 1, device[request.method])
-            local err, result = pcall(unpack(call))
+            local _, result = pcall(unpack(call))
             table.insert(responses, {
               kind = device.kind,
               response = result,
               name = labels[device.name],
             })
           end
+        elseif type(request.methods) == 'table' then
+          local results = {}
+          for i, method in request.methods do
+            if device[request.method] then
+              local _, result = pcall(device[method])
+              results[method] = result
+            end
+          end
+          table.insert(responses, {
+            kind = device.kind,
+            response = results,
+            name = labels[device.name],
+          })
         else
           table.insert(responses, {
             kind = device.kind,
