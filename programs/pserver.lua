@@ -33,7 +33,7 @@ local hostname = table.concat(argv, ' ')
 
 -- Load Label Map
 local labels = setmetatable(
-  dofile('labels') or {},
+  dofile('labels'),
   { __index = function(self, key) return key end }
 )
 
@@ -49,7 +49,7 @@ local function scanPeripherals()
         rednet.open(name)
       end
     else
-      print('Found: '..name..' '..kind)
+      print('Found: '..labels[name]..' '..name..' '..kind)
       table.insert(peripherals, setmetatable({
         name = name,
         ['type'] = kind,
@@ -106,7 +106,7 @@ local function getPeripherals(filter)
   return setmetatable(matches, Each)
 end
 
-local app
+local app = {}
 
 function app.poll(request)
   local devices = getPeripherals(request.filter)
@@ -234,7 +234,7 @@ local function console()
   while running do
     pcall(function()
       write('Query: ')
-      print(respondTo({method = read()}))
+      print(respondTo({'poll', filter = { name = read()}}))
     end)
   end
 end
