@@ -112,7 +112,7 @@ function app.poll(request)
   local devices = getPeripherals(request.filter)
   local response = {}
 
-  devices.each(function(i, device)
+  devices:each(function(i, device)
     table.insert(response, {
       kind = device.kind,
       response = device.methods,
@@ -129,7 +129,7 @@ function app.call(request)
   local response = {}
   assert(request.method, 'Required param #method missing')
 
-  devices.each(function(i, device)
+  devices:each(function(i, device)
     -- prepare method call
     local call = { device[request.method] }
     for i,v in ipairs(args) do table.insert(call, v) end
@@ -153,7 +153,7 @@ function app.scan(request)
   local response = {}
   assert(request.methods, 'Required param #methods missing')
 
-  devices.each(function(i, device)
+  devices:each(function(i, device)
     local results = {}
     for i, method in ipairs(request.methods) do
       local _, result = pcall(device[method])
@@ -233,8 +233,13 @@ end
 local function console()
   while running do
     pcall(function()
+      local buffer, request = {}
       write('Query: ')
-      print(respondTo({'poll', { filter = { name = read() }}}))
+      buffer = read()
+      if buffer ~= '' then
+        request.filter = { name = buffer }
+      end
+      print(respondTo({'poll', buffer}))
     end)
   end
 end
