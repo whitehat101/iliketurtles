@@ -88,7 +88,7 @@ local function getPeripherals(filter)
   -- filter by device name/label
   if filter.name then
     for i=#matches, 1, -1 do
-      if labels[device.name] ~= filter.name then
+      if labels[matches[i].name] ~= filter.name then
         table.remove(matches, i)
       end
     end
@@ -97,7 +97,7 @@ local function getPeripherals(filter)
   -- filter by device type
   if filter.type then
     for i=#matches, 1, -1 do
-      if device.type ~= filter.type then
+      if matches[i].type ~= filter.type then
         table.remove(matches, i)
       end
     end
@@ -177,7 +177,7 @@ local function respondTo(request)
   request[1] = app[request[1]]
 
   -- Call action
-  local success, body = pcall(request)
+  local success, response = pcall(unpack(request))
 
   return textutils.serialize({
     -- host = os.getComputerLabel() or ''..os.getComputerID(),
@@ -234,7 +234,7 @@ local function console()
   while running do
     pcall(function()
       write('Query: ')
-      print(respondTo({'poll', filter = { name = read()}}))
+      print(respondTo({'poll', { filter = { name = read() }}}))
     end)
   end
 end
