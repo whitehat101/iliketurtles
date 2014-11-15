@@ -9,11 +9,12 @@ local install = {
   'apis/travel',
   'programs/cacti-farmer',
   'programs/pumpkin-plower',
+  'programs/pserver',
 }
 
 fs.delete(root)
 for i, file in ipairs(install) do
-  shell.run('github get whitehat101/iliketurtles/master/'..file..' '..root..file)
+  shell.run('github get whitehat101/iliketurtles/master/'..file..'.lua '..root..file)
 end
 
 if not fs.exists('/startup') then
