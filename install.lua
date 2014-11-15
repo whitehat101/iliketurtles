@@ -7,9 +7,11 @@ local install = {
   'apis/queued',
   'apis/refuel',
   'apis/travel',
+  'apis/restock',
   'programs/cacti-farmer',
   'programs/pumpkin-plower',
   'programs/pserver',
+  'programs/floorist',
 }
 
 fs.delete(root)

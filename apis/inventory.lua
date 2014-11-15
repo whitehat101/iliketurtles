@@ -2,15 +2,12 @@ local data
 local activeTool
 
 -- set an initial inventory state
-function set(inv)
+function set(inv, tool)
   data = inv
   local mt = getmetatable(inventory) or {}
   mt.__index = data
   setmetatable(inventory, mt)
-end
-
-function get()
-  return data -- worth returning a copy?
+  activeTool = tool
 end
 
 function with(item, callback)
@@ -28,7 +25,7 @@ function with(item, callback)
 
   -- restore inventory before callback
   turtle.select(prevItem)
-  return callback()
+  return callback and callback()
 end
 
 function unequip()

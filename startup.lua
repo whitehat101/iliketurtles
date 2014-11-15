@@ -8,7 +8,7 @@ if os.iliketurtles == nil then
     [gps] = {'locate'}
   }
   if turtle then
-    methods[turtle] = {'up','down','forward','back','turnLeft','turnRight','dig','digDown','digUp'}
+    methods[turtle] = {'up','down','forward','back','turnLeft','turnRight','dig','digDown','digUp','place','placeDown','placeUp','suck','suckDown','suckUp'}
   end
   queued.wrapAll(methods)
 
