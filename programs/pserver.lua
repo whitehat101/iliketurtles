@@ -123,7 +123,6 @@ end
 local app = {}
 
 function app.poll(request)
-  print('poll!!', request)
   local devices = getPeripherals(request.filter)
   local response = {}
 

@@ -89,7 +89,6 @@ local function listen()
 end
 
 local function request()
-  local id = assert(rednet.lookup(protocol, host), 'Host could not be resolved: '..host..':'..protocol)
   local body = {}
 
   if command == "scan" then
@@ -100,6 +99,7 @@ local function request()
   end
 
   if host ~= '*' then
+    local id = assert(rednet.lookup(protocol, host), 'Host could not be resolved: '..host..':'..protocol)
     rednet.send(id, { command, body }, protocol)
   else
     rednet.broadcast({ command, body }, protocol)
