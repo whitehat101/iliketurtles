@@ -245,7 +245,7 @@ local function console()
       if buffer ~= '' then
         request.filter = { name = buffer }
       end
-      print(respondTo({'poll', buffer}))
+      textutils.pagedPrint(respondTo({'poll', buffer}))
     end)
   end
 end
