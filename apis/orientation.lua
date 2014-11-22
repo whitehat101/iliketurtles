@@ -30,13 +30,13 @@ end
 
 -- |0 -1| x
 -- |1  0| z
-turtle.turnRight.queue(function()
+turtle.turnRight.always(function()
   v.x, v.z = -v.z, v.x
 end)
 
 -- | 0 1| x
 -- |-1 0| z
-turtle.turnLeft.queue(function()
+turtle.turnLeft.always(function()
   v.x, v.z = v.z, -v.x
 end)
 
@@ -129,9 +129,44 @@ end
 
 function turn(direction)
   local method = 'turn'..direction:gsub("^%l", string.upper)
-  local f = assert(orientation[method], 'MethodMissing: '..method)
-  return f()
+  local fn = assert(orientation[method], 'MethodMissing: '..method)
+  return fn()
 end
+
+function syncToFile(file)
+  file = file or '/data/orientation'
+
+  if fs.exists(file) then
+    local h, line = fs.open(file, 'r')
+    line = h.readLine()
+    assert(calibrate(line), "orientation sync file exists, but is corrupt. Please repair.\n\n"..orientation.."\n"..line)
+    h.close()
+  else
+    print("Help! What direction am I facing?\n")
+    while not calibrate(read())
+      print("No... that doesn't sound right.")
+    end
+    print("Perfect!")
+  end
+
+  local save, unregister
+  save = function()
+    local h = fs.open(file, 'w')
+    h.writeLine(tostring())
+    h.close()
+  end
+
+  -- register callback, save unregistration fns for later
+  unregister = {
+    turtle.turnRight.always(save),
+    turtle.turnLeft.always(save)
+  }
+
+  return function()
+    for i,fn in ipairs(unregister) do fn() end
+  end
+end
+
 
 function vector()
   return Vector.new(v.x, 0, v.z)
