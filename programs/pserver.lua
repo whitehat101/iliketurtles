@@ -7,22 +7,28 @@ os.loadAPI('/iliketurtles/apis/label')
 Request all methods from a server
 {
   [1] = 'poll',
-  filter = filter -- optional
+  [2] = {
+    filter = filter -- optional
+  }
 }
 
 Call a single method with optional args
 {
   [1] = 'call',
-  filter = filter, -- optional
-  method = 'method',
-  args = { ... } -- optional
+  [2] = {
+    filter = filter, -- optional
+    method = 'method',
+    args = { ... } -- optional
+  }
 }
 
 Call several methods without arguments
 {
   [1] = 'scan',
-  filter = filter, -- optional
-  methods = {'method1', 'method2', 'method3'},
+  [2] = {
+    filter = filter, -- optional
+    methods = {'method1', 'method2', 'method3'},
+  }
 }
 
 ]]--

@@ -3,25 +3,16 @@
 --[[
 
 Request all methods from a server
-{
-  [1] = 'poll',
-  filter = filter -- optional
-}
+
+  pclient proto host poll
 
 Call a single method with optional args
-{
-  [1] = 'call',
-  filter = filter, -- optional
-  method = 'method',
-  args = { ... } -- optional
-}
+
+  pclient proto host call method [args]
 
 Call several methods without arguments
-{
-  [1] = 'scan',
-  filter = filter, -- optional
-  methods = {'method1', 'method2', 'method3'},
-}
+
+  pclient proto host scan method1 method2 method3...
 
 ]]--
 
