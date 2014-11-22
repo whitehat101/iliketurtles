@@ -99,7 +99,20 @@ end
 
 local function request()
   local id = assert(rednet.lookup(protocol, host), 'Host could not be resolved: '..host..':'..protocol)
-  rednet.send(id, {command, args = argv}, protocol)
+  local body = {}
+
+  if command == "scan" then
+    body = { methods = argv }
+  elseif command == "call" then
+    local method = table.remove(argv, 1)
+    body = { method = method, args = argv }
+  end
+
+  if host ~= '*' then
+    rednet.send(id, { command, body }, protocol)
+  else
+    rednet.broadcast({ command, body }, protocol)
+  end
 end
 
 -- local function console()
