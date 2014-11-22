@@ -35,9 +35,15 @@ local hostname = table.concat(argv, ' ')
 
 -- Scan Peripherals
 local peripherals
+
+local labels
+labels = label.new('/labels', {})
+
 local function scanPeripherals()
   print('Scanning Peripherals')
+  local names = {}
   peripherals = {}
+
   for i, name in ipairs(peripheral.getNames()) do
     local kind = peripheral.getType(name)
     if kind == 'modem' then
@@ -46,6 +52,7 @@ local function scanPeripherals()
       end
     else
       print('Found: '..labels[name]..' '..name..' '..kind)
+      table.insert(names, name)
       table.insert(peripherals, setmetatable({
         name = name,
         ['type'] = kind,
@@ -55,16 +62,11 @@ local function scanPeripherals()
       }))
     end
   end
+
+  -- (re)Load Label Map
+  labels = label.new('/labels', names)
 end
 
--- Load Label Map
-local labels = label.new('/labels', (function()
-  local names = {}
-  for i,peripheral in ipairs(peripherals) do
-    table.insert(names, peripheral.name)
-  end
-  return names
-end)())
 
 
 local function copy(obj, seen)
@@ -115,6 +117,7 @@ end
 local app = {}
 
 function app.poll(request)
+  print('poll!!', request)
   local devices = getPeripherals(request.filter)
   local response = {}
 
@@ -179,11 +182,15 @@ end
 -- local pcall(peripheral.call, name, isWireless)
 
 local function respondTo(request)
+  -- print(request)
+  -- print(request[1])
+  -- print(request[2] or {})
+
   -- Promote action string to action method on app object
-  request[1] = app[request[1]]
+  -- request[1] = app[request[1]]
 
   -- Call action
-  local success, response = pcall(unpack(request))
+  local success, response = pcall(app[request[1]], request[2] or {})
 
   return textutils.serialize({
     -- host = os.getComputerLabel() or ''..os.getComputerID(),
@@ -221,7 +228,7 @@ local function respond()
   while running do
     os.pullEventRaw('request-queued')            -- block for queued request
     while #queue > 0 do
-      local id, request = table.remove(queue, 1) -- unshift from queue O(n)
+      local id, request = unpack(table.remove(queue, 1)) -- unshift from queue O(n)
       rednet.send(id, respondTo(request), protocol)
     end
   end
@@ -245,7 +252,7 @@ local function console()
       if buffer ~= '' then
         request.filter = { name = buffer }
       end
-      textutils.pagedPrint(respondTo({'poll', buffer}))
+      textutils.pagedPrint(respondTo({'poll', request}), 15)
     end)
   end
 end

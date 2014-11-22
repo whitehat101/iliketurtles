@@ -8,9 +8,11 @@ local install = {
   'apis/refuel',
   'apis/travel',
   'apis/restock',
+  'apis/label',
   'programs/cacti-farmer',
   'programs/pumpkin-plower',
   'programs/pserver',
+  'programs/pclient',
   'programs/floorist',
 }
 

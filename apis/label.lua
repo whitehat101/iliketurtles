@@ -6,14 +6,17 @@ function Label:__index(key)
 end
 
 function new(file, keys)
-  assert(fs.exists(file))
+  local labels
+  assert(file)
   keys = keys or {}
 
-  local labels
-
-  fs.open(file, 'r', function(h)
-    labels = textutils.unserialize(h.readAll())
-  end)
+  if fs.exists(file) then
+    fs.open(file, 'r', function(h)
+      labels = textutils.unserialize(h.readAll())
+    end)
+  else
+    labels = {}
+  end
 
   if #keys > 0 then
     for i,key in ipairs(keys) do
