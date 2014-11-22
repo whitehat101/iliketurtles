@@ -1,5 +1,7 @@
 -- Peripheral Server
 
+os.loadAPI('/iliketurtles/apis/label')
+
 --[[
 
 Request all methods from a server
@@ -31,12 +33,6 @@ assert(#argv >= 2, 'Usage: '..shell.getRunningProgram()..' protocol hostname')
 local protocol = table.remove(argv, 1) .. '-peripheral'
 local hostname = table.concat(argv, ' ')
 
--- Load Label Map
-local labels = setmetatable(
-  dofile('labels'),
-  { __index = function(self, key) return key end }
-)
-
 -- Scan Peripherals
 local peripherals
 local function scanPeripherals()
@@ -60,6 +56,16 @@ local function scanPeripherals()
     end
   end
 end
+
+-- Load Label Map
+local labels = label.new('/labels', (function()
+  local names = {}
+  for i,peripheral in ipairs(peripherals) do
+    table.insert(names, peripheral.name)
+  end
+  return names
+end)())
+
 
 local function copy(obj, seen)
   if type(obj) ~= 'table' then return obj end

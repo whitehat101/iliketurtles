@@ -18,6 +18,18 @@ if os.iliketurtles == nil then
     os.loadAPI('/iliketurtles/apis/inventory')
   end
 
+  -- monkey patch fs.open, because it's driving me crazy
+  local _open = fs.open
+  fs.open = function (file, mode, callback)
+    if type(callback) == 'function' then
+      local handle = _open(file, mode)
+      callback(handle)
+      handle.close()
+    else
+      return _open(file, mode)
+    end
+  end
+
   shell.setPath(shell.path()..':/iliketurtles/programs')
   print('iliketurtles')
 end
